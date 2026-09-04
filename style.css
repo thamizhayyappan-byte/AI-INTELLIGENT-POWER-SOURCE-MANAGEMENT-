@@ -424,20 +424,27 @@ input:checked + .slider { background-color: var(--text-emerald); }
 input:checked + .slider:before { transform: translateX(20px); }
 
 /* ---------------------------------------------------------
-   7. CHART CONTAINER & CANVAS SIZING (Prevents vertical stretch)
+   7. STRICT COMPACT CHART SIZING & CANVASES (Prevents vertical stretch)
    --------------------------------------------------------- */
-canvas {
-    max-height: 280px !important;
-    height: 280px !important;
+canvas, 
+.chart-container canvas, 
+.card canvas, 
+.tab-content canvas,
+#tab-train canvas,
+#tab-cost canvas,
+#tab-dispatch canvas {
+    max-height: 250px !important;
+    height: 250px !important;
+    min-height: 250px !important;
     width: 100% !important;
     display: block !important;
 }
 
 .chart-container {
-    position: relative;
-    height: 280px !important;
-    max-height: 280px !important;
+    position: relative !important;
+    height: 250px !important;
+    max-height: 250px !important;
     width: 100% !important;
     overflow: hidden !important;
-    margin: 0 auto;
+    margin: 0 auto !important;
 }

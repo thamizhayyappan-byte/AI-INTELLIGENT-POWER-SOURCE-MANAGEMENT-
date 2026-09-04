@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+    <defs>
+        <linearGradient id="neonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#38BDF8" />
+            <stop offset="50%" stop-color="#3B82F6" />
+            <stop offset="100%" stop-color="#10B981" />
+        </linearGradient>
+        <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="3.5" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+    </defs>
+    
+    <!-- Outer Hexagonal Tech Ring -->
+    <polygon points="50,6 88,28 88,72 50,94 12,72 12,28" fill="#0F172A" stroke="url(#neonGrad)" stroke-width="3" filter="url(#glow)" />
+    
+    <!-- Inner Circuit Lines -->
+    <line x1="50" y1="6" x2="50" y2="28" stroke="#38BDF8" stroke-width="2" stroke-dasharray="2 2" />
+    <line x1="88" y1="50" x2="68" y2="50" stroke="#10B981" stroke-width="2" stroke-dasharray="2 2" />
+    <line x1="50" y1="94" x2="50" y2="72" stroke="#F59E0B" stroke-width="2" stroke-dasharray="2 2" />
+    <line x1="12" y1="50" x2="32" y2="50" stroke="#3B82F6" stroke-width="2" stroke-dasharray="2 2" />
+    
+    <!-- Multi-Source Energy Nodes -->
+    <circle cx="50" cy="18" r="4" fill="#38BDF8" filter="url(#glow)" />
+    <circle cx="82" cy="50" r="4" fill="#10B981" filter="url(#glow)" />
+    <circle cx="50" cy="82" r="4" fill="#F59E0B" filter="url(#glow)" />
+    <circle cx="18" cy="50" r="4" fill="#3B82F6" filter="url(#glow)" />
+    
+    <!-- Center Core Lightning Power Symbol -->
+    <path d="M53 26 L34 52 H50 L47 74 L66 48 H50 Z" fill="url(#neonGrad)" filter="url(#glow)" />
+</svg>

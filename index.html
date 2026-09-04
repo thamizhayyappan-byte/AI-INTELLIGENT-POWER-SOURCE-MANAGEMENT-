@@ -8,8 +8,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- FontAwesome Icons CDN -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Custom Dark Microgrid Stylesheet -->
-    <link rel="stylesheet" href="style.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <!-- Custom Dark Microgrid Stylesheet (v3.0 Cache Bust) -->
+    <link rel="stylesheet" href="style.css?v=3.0">
 </head>
 <body>
 
@@ -19,6 +21,7 @@
     <div id="login-screen">
         <div class="login-card">
             <div class="login-header">
+                <img src="logo.svg" alt="IPDEMS Logo" style="width: 72px; height: 72px; margin-bottom: 12px; filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.6));">
                 <h1>⚡ IPDEMS</h1>
                 <p>Intelligent Power Decision & Energy Management System</p>
             </div>
@@ -61,6 +64,7 @@
         <div class="sidebar">
             <div>
                 <div class="sidebar-brand" style="text-align: center; margin-bottom: 20px;">
+                    <img src="logo.svg" alt="IPDEMS Logo" style="width: 52px; height: 52px; margin-bottom: 8px; filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.5));">
                     <h2>⚡ IPDEMS</h2>
                     <p>Multi-Source Energy Optimization</p>
                 </div>
@@ -288,13 +292,13 @@
                             <div>
                                 <h4 style="color: #38BDF8; margin-bottom: 10px;">TFT Forecasting Model: Epoch Loss Convergence</h4>
                                 <div class="chart-container">
-                                    <canvas id="chartTFTLoss" style="height:280px; max-height:280px;"></canvas>
+                                    <canvas id="chartTFTLoss" style="height:250px !important; max-height:250px !important;"></canvas>
                                 </div>
                             </div>
                             <div>
                                 <h4 style="color: #10B981; margin-bottom: 10px;">VAE Anomaly Model: Reconstruction Loss</h4>
                                 <div class="chart-container">
-                                    <canvas id="chartVAELoss" style="height:280px; max-height:280px;"></canvas>
+                                    <canvas id="chartVAELoss" style="height:250px !important; max-height:250px !important;"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -304,7 +308,7 @@
                     <div id="tab-cost" class="tab-content">
                         <h4 style="color: #38BDF8; margin-bottom: 10px;">24-Hour Cumulative Electricity Cost Comparison (₹)</h4>
                         <div class="chart-container">
-                            <canvas id="chartCostCompare" style="height:280px; max-height:280px;"></canvas>
+                            <canvas id="chartCostCompare" style="height:250px !important; max-height:250px !important;"></canvas>
                         </div>
                     </div>
 
@@ -314,13 +318,13 @@
                             <div>
                                 <h4 style="color: #38BDF8; margin-bottom: 10px;">Grid Peak-Shaving Trajectory (17:00 - 22:00 Peak Tariff)</h4>
                                 <div class="chart-container">
-                                    <canvas id="chartPeakShaving" style="height:280px; max-height:280px;"></canvas>
+                                    <canvas id="chartPeakShaving" style="height:250px !important; max-height:250px !important;"></canvas>
                                 </div>
                             </div>
                             <div>
                                 <h4 style="color: #F59E0B; margin-bottom: 10px;">Predicted Multi-Source Energy Dispatch Share</h4>
                                 <div class="chart-container">
-                                    <canvas id="chartEnergyDonut" style="height:280px; max-height:280px;"></canvas>
+                                    <canvas id="chartEnergyDonut" style="height:250px !important; max-height:250px !important;"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -365,9 +369,12 @@
                 <!-- HEADER BANNER CONTAINER -->
                 <div style="background-color: #0F172A; border: 2px solid #1E293B; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px;">
                     <div class="flex justify-between items-center" style="flex-wrap: wrap;">
-                        <div>
-                            <h2 style="font-size: 1.5rem; margin: 0;">INTELLIGENT POWER DECISION AND ENERGY MANAGEMENT SYSTEM</h2>
-                            <div style="color: #38BDF8; font-size: 0.95rem; font-weight: 700; margin-top: 4px;">Adaptive Multi-Source Energy Management Platform</div>
+                        <div class="flex items-center gap-4">
+                            <img src="logo.svg" alt="IPDEMS Logo" style="width: 48px; height: 48px; filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.6));">
+                            <div>
+                                <h2 style="font-size: 1.5rem; margin: 0;">INTELLIGENT POWER DECISION AND ENERGY MANAGEMENT SYSTEM</h2>
+                                <div style="color: #38BDF8; font-size: 0.95rem; font-weight: 700; margin-top: 4px;">Adaptive Multi-Source Energy Management Platform</div>
+                            </div>
                         </div>
                         <span style="background-color: #10B981; color: #FFFFFF; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 900;">● SYSTEM ONLINE</span>
                     </div>
