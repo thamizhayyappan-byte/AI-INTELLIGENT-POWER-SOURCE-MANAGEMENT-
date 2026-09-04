@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ IPDEMS - Intelligent Power Decision & Energy Management System</title>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom Dark Microgrid Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ========================================================= -->
+    <!-- 1. LOGIN SCREEN -->
+    <!-- ========================================================= -->
+    <div id="login-screen">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>⚡ IPDEMS</h1>
+                <p>Intelligent Power Decision & Energy Management System</p>
+            </div>
+            
+            <hr style="border-color: #334155; margin: 20px 0;">
+
+            <form id="login-form">
+                <h3 style="margin-bottom: 16px; color: #F8FAFC;">🔐 Sign In to Microgrid Control Center</h3>
+                
+                <div class="form-group">
+                    <label for="login-u"><i class="fas fa-user"></i> Username</label>
+                    <input type="text" id="login-u" class="form-input" value="admin" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-p"><i class="fas fa-key"></i> Password</label>
+                    <div class="input-container">
+                        <input type="password" id="login-p" class="form-input" value="password123" required>
+                        <button type="button" class="eye-btn" onclick="togglePasswordVisibility('login-p', 'eye-icon')">
+                            <i id="eye-icon" class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="login-error" style="color: #EF4444; font-weight: 700; font-size: 0.85rem; margin-bottom: 14px; display: none;">
+                    Invalid Username or Password!
+                </div>
+
+                <button type="submit" class="btn-primary">Access Dashboard 🚀</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- 2. MAIN DASHBOARD WIZARD CONTAINER -->
+    <!-- ========================================================= -->
+    <div id="dashboard-layout" class="hidden">
+        
+        <!-- SIDEBAR STEP TRACKER & CONTROLS -->
+        <div class="sidebar">
+            <div>
+                <div class="sidebar-brand" style="text-align: center; margin-bottom: 20px;">
+                    <h2>⚡ IPDEMS</h2>
+                    <p>Multi-Source Energy Optimization</p>
+                </div>
+                
+                <div style="font-size: 0.85rem; color: #94A3B8; margin-bottom: 16px;">
+                    Logged in as: <strong id="logged-user" style="color: #F8FAFC;">Admin</strong>
+                </div>
+
+                <hr style="border-color: #334155; margin-bottom: 16px;">
+
+                <h4 style="color: #38BDF8; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 12px;">🧭 PREDICTION WIZARD STEPS</h4>
+
+                <div id="tracker-step1" class="step-tracker-box">
+                    <strong style="color: #38BDF8;">👉 STEP 1: System Inputs</strong><br>
+                    <span style="font-size: 0.78rem; color: #94A3B8;">Configure Hardware & Tariffs</span>
+                </div>
+
+                <div id="tracker-step2" class="step-inactive">
+                    <span>⚪ STEP 2: AI Predictions</span>
+                </div>
+
+                <div id="tracker-step3" class="step-inactive">
+                    <span>⚪ STEP 3: Live Telemetry</span>
+                </div>
+
+                <hr style="border-color: #334155; margin: 20px 0;">
+
+                <h4 style="color: #38BDF8; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 10px;">⚙️ Operating Controls</h4>
+                <div class="form-group">
+                    <label>Operating Mode</label>
+                    <select id="op-mode" class="form-input" onchange="updateOperatingMode()">
+                        <option value="Automatic" selected>Automatic</option>
+                        <option value="Manual">Manual</option>
+                        <option value="Maintenance">Maintenance</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Data Mode</label>
+                    <select id="data-mode" class="form-input">
+                        <option value="Simulation" selected>Simulation</option>
+                        <option value="Live Hardware">Live Hardware</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <button class="btn-secondary w-full" onclick="refreshTelemetry()" style="margin-bottom: 10px;">🔄 Refresh Telemetry</button>
+                <button class="btn-secondary w-full" onclick="logout()" style="border-color: #EF4444; color: #EF4444;">🚪 Sign Out</button>
+                <div style="font-size: 0.75rem; color: #94A3B8; text-align: center; margin-top: 10px;">
+                    Last updated: <span id="last-update-time">--:--:--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT AREA -->
+        <div class="main-content">
+
+            <!-- ========================================================= -->
+            <!-- STEP 1: USER INPUT PAGE -->
+            <!-- ========================================================= -->
+            <div id="step1-page">
+                <h2 style="color: #38BDF8; font-size: 1.8rem; margin-bottom: 6px;">🎛️ Step 1: User Input & System Configuration</h2>
+                <p style="color: #94A3B8; margin-bottom: 24px;">Enter custom microgrid hardware capacities, battery limits, time-of-use tariffs, load demands, and AI model hyper-parameters below before running cost savings prediction models.</p>
+
+                <form id="input-form">
+                    <div class="grid-2">
+                        <!-- Left Column -->
+                        <div>
+                            <div class="card">
+                                <h3 style="color: #F59E0B; margin-bottom: 14px;"><i class="fas fa-sun"></i> 1. Solar PV System Parameters</h3>
+                                <div class="form-group">
+                                    <label>Solar PV Capacity (W)</label>
+                                    <input type="number" id="in_pv_rated" class="form-input" value="100" min="10" max="5000" step="10">
+                                </div>
+                                <div class="form-group">
+                                    <label>Solar Panel Efficiency Factor (%): <span id="val_solar_health">91%</span></label>
+                                    <input type="range" id="in_solar_health" class="w-full" value="91" min="50" max="100" oninput="document.getElementById('val_solar_health').innerText=this.value+'%'">
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <h3 style="color: #10B981; margin-bottom: 14px;"><i class="fas fa-car-battery"></i> 2. Battery Storage System (BESS)</h3>
+                                <div class="form-group">
+                                    <label>Battery Nominal Voltage (V)</label>
+                                    <input type="number" id="in_batt_v" class="form-input" value="12.6" min="3.7" max="48.0" step="0.1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Battery Capacity (Ah)</label>
+                                    <input type="number" id="in_batt_ah" class="form-input" value="7.0" min="1.0" max="500.0" step="0.5">
+                                </div>
+                                <div class="form-group">
+                                    <label>Initial State of Charge (SOC %): <span id="val_soc_init">74%</span></label>
+                                    <input type="range" id="in_soc_init" class="w-full" value="74" min="20" max="95" oninput="document.getElementById('val_soc_init').innerText=this.value+'%'">
+                                </div>
+                                <div class="form-group">
+                                    <label>Minimum SOC Limit (%): <span id="val_soc_min">20%</span></label>
+                                    <input type="range" id="in_soc_min" class="w-full" value="20" min="10" max="40" oninput="document.getElementById('val_soc_min').innerText=this.value+'%'">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div>
+                            <div class="card">
+                                <h3 style="color: #38BDF8; margin-bottom: 14px;"><i class="fas fa-bolt"></i> 3. Electricity Tariff Structure (₹/kWh)</h3>
+                                <div class="form-group">
+                                    <label>Peak Tariff Rate (₹/kWh - 17:00 to 22:00)</label>
+                                    <input type="number" id="in_tariff_peak" class="form-input" value="8.0" min="2.0" max="30.0" step="0.5">
+                                </div>
+                                <div class="form-group">
+                                    <label>Normal Tariff Rate (₹/kWh - 06:00 to 17:00)</label>
+                                    <input type="number" id="in_tariff_norm" class="form-input" value="6.0" min="1.0" max="20.0" step="0.5">
+                                </div>
+                                <div class="form-group">
+                                    <label>Off-Peak Tariff Rate (₹/kWh - 22:00 to 06:00)</label>
+                                    <input type="number" id="in_tariff_offp" class="form-input" value="4.0" min="1.0" max="15.0" step="0.5">
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <h3 style="color: #3B82F6; margin-bottom: 14px;"><i class="fas fa-lightbulb"></i> 4. Connected Load Demands</h3>
+                                <div class="form-group">
+                                    <label>Priority 1 Critical Load Demand (W)</label>
+                                    <input type="number" id="in_crit_w" class="form-input" value="20" min="5" max="500" step="5">
+                                </div>
+                                <div class="form-group">
+                                    <label>Priority 2 Important Load Demand (W)</label>
+                                    <input type="number" id="in_imp_w" class="form-input" value="25" min="0" max="500" step="5">
+                                </div>
+                                <div class="form-group">
+                                    <label>Priority 3 Non-Critical Load Demand (W)</label>
+                                    <input type="number" id="in_noncrit_w" class="form-input" value="45" min="0" max="1000" step="5">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Hyperparameters Card -->
+                    <div class="card">
+                        <h3 style="color: #A855F7; margin-bottom: 14px;"><i class="fas fa-robot"></i> 5. AI Model Training Hyperparameters</h3>
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label>Training Epochs: <span id="val_epochs">50</span></label>
+                                <input type="range" id="in_epochs" class="w-full" value="50" min="10" max="100" step="10" oninput="document.getElementById('val_epochs').innerText=this.value">
+                            </div>
+                            <div class="form-group">
+                                <label>Learning Rate</label>
+                                <select id="in_lr" class="form-input">
+                                    <option value="0.0001">0.0001</option>
+                                    <option value="0.0005">0.0005</option>
+                                    <option value="0.001" selected>0.001</option>
+                                    <option value="0.005">0.005</option>
+                                    <option value="0.01">0.01</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Batch Size</label>
+                                <select id="in_batch" class="form-input">
+                                    <option value="16">16</option>
+                                    <option value="32" selected>32</option>
+                                    <option value="64">64</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary w-full" style="padding: 16px; font-size: 1.1rem; margin-top: 10px;">
+                        🚀 Run AI Model Training & Predict Cost Savings ➡️
+                    </button>
+                </form>
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- STEP 2: AI PREDICTIONS RESULTS PAGE -->
+            <!-- ========================================================= -->
+            <div id="step2-page" class="hidden">
+                <!-- TOP NAV BUTTONS -->
+                <div class="nav-bar">
+                    <button class="btn-secondary" onclick="navigateToStep('input')">⬅️ Back to Step 1: System Inputs</button>
+                    <button class="btn-primary" onclick="navigateToStep('telemetry')">Proceed to Step 3: Live Microgrid Telemetry ➡️</button>
+                </div>
+
+                <!-- KPI METRICS BANNER -->
+                <div class="grid-5" style="margin-bottom: 24px;">
+                    <div class="metric-card">
+                        <div class="metric-label">Predicted Daily Savings</div>
+                        <div id="p2-daily-savings" class="metric-value">₹24.80</div>
+                        <div id="p2-savings-pct" class="metric-sub">34.2% Saved</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Predicted Monthly Savings</div>
+                        <div id="p2-monthly-savings" class="metric-value">₹744.00</div>
+                        <div class="metric-sub" style="color: #94A3B8;">30-Day Est.</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Predicted Annual Savings</div>
+                        <div id="p2-annual-savings" class="metric-value">₹9,052.00</div>
+                        <div class="metric-sub" style="color: #94A3B8;">365-Day Est.</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">TFT Model R² Score</div>
+                        <div class="metric-value">0.985</div>
+                        <div class="metric-sub">Accuracy: 98.5%</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">VAE Anomaly Precision</div>
+                        <div class="metric-value">97.2%</div>
+                        <div class="metric-sub">Wastage Detection</div>
+                    </div>
+                </div>
+
+                <!-- TABBED ANALYTICS SECTION -->
+                <div class="card">
+                    <div class="tabs-header">
+                        <button class="tab-btn active" onclick="switchTab('tab-train', this)">📈 Model Training & Loss Convergence</button>
+                        <button class="tab-btn" onclick="switchTab('tab-cost', this)">💰 Cost Savings Predictions</button>
+                        <button class="tab-btn" onclick="switchTab('tab-dispatch', this)">⚡ Peak-Shaving & Dispatch Share</button>
+                        <button class="tab-btn" onclick="switchTab('tab-export', this)">📥 Export Model Results & RAG</button>
+                    </div>
+
+                    <!-- TAB 1: MODEL TRAINING LOSS -->
+                    <div id="tab-train" class="tab-content active">
+                        <div class="grid-2">
+                            <div>
+                                <h4 style="color: #38BDF8; margin-bottom: 10px;">TFT Forecasting Model: Epoch Loss Convergence</h4>
+                                <canvas id="chartTFTLoss" height="220"></canvas>
+                            </div>
+                            <div>
+                                <h4 style="color: #10B981; margin-bottom: 10px;">VAE Anomaly Model: Reconstruction Loss</h4>
+                                <canvas id="chartVAELoss" height="220"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: COST PREDICTIONS -->
+                    <div id="tab-cost" class="tab-content">
+                        <h4 style="color: #38BDF8; margin-bottom: 10px;">24-Hour Cumulative Electricity Cost Comparison (₹)</h4>
+                        <canvas id="chartCostCompare" height="150"></canvas>
+                    </div>
+
+                    <!-- TAB 3: PEAK SHAVING & DISPATCH SHARE -->
+                    <div id="tab-dispatch" class="tab-content">
+                        <div class="grid-2">
+                            <div>
+                                <h4 style="color: #38BDF8; margin-bottom: 10px;">Grid Peak-Shaving Trajectory (17:00 - 22:00 Peak Tariff)</h4>
+                                <canvas id="chartPeakShaving" height="220"></canvas>
+                            </div>
+                            <div>
+                                <h4 style="color: #F59E0B; margin-bottom: 10px;">Predicted Multi-Source Energy Dispatch Share</h4>
+                                <canvas id="chartEnergyDonut" height="220"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: EXPORT & RAG -->
+                    <div id="tab-export" class="tab-content">
+                        <h4 style="color: #38BDF8; margin-bottom: 12px;">Download Model Predictions & Validation Dataset</h4>
+                        <button class="btn-primary" onclick="downloadCSVResults()" style="width: auto; padding: 10px 20px; margin-bottom: 20px;">
+                            📥 Download Model Prediction Results (CSV)
+                        </button>
+
+                        <hr style="border-color: #334155; margin: 20px 0;">
+
+                        <h4 style="color: #A855F7; margin-bottom: 10px;"><i class="fas fa-comments"></i> Ask RAG Copilot About Model Results</h4>
+                        <div class="form-group">
+                            <input type="text" id="rag-input" class="form-input" placeholder="Ask any question about loss convergence, TFT/VAE formulas, SOC, or ROI..." onkeydown="if(event.key==='Enter') queryRAGCopilot()">
+                        </div>
+                        <button class="btn-secondary" onclick="queryRAGCopilot()">Ask Copilot 💬</button>
+
+                        <div id="rag-output" style="background-color: #0F172A; border: 2px solid #334155; border-radius: 8px; padding: 16px; margin-top: 14px; display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- BOTTOM NAV BUTTONS -->
+                <div class="nav-bar" style="margin-top: 24px;">
+                    <button class="btn-secondary" onclick="navigateToStep('input')">⬅️ Back to Step 1: System Inputs</button>
+                    <button class="btn-primary" onclick="navigateToStep('telemetry')">Proceed to Step 3: Live Microgrid Telemetry ➡️</button>
+                </div>
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- STEP 3: LIVE TELEMETRY & CONTROL CENTER -->
+            <!-- ========================================================= -->
+            <div id="step3-page" class="hidden">
+                <!-- TOP NAV BUTTONS -->
+                <div class="nav-bar">
+                    <button class="btn-secondary" onclick="navigateToStep('results')">⬅️ Back to Step 2: Prediction Results</button>
+                    <button class="btn-primary" onclick="navigateToStep('input')">🔄 Restart Step 1: System Inputs</button>
+                </div>
+
+                <!-- HEADER BANNER CONTAINER -->
+                <div style="background-color: #0F172A; border: 2px solid #1E293B; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px;">
+                    <div class="flex justify-between items-center" style="flex-wrap: wrap;">
+                        <div>
+                            <h2 style="font-size: 1.5rem; margin: 0;">INTELLIGENT POWER DECISION AND ENERGY MANAGEMENT SYSTEM</h2>
+                            <div style="color: #38BDF8; font-size: 0.95rem; font-weight: 700; margin-top: 4px;">Adaptive Multi-Source Energy Management Platform</div>
+                        </div>
+                        <span style="background-color: #10B981; color: #FFFFFF; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 900;">● SYSTEM ONLINE</span>
+                    </div>
+                    <div style="margin-top: 14px; font-size: 0.85rem; color: #94A3B8; display: flex; gap: 20px; flex-wrap: wrap; font-weight: 700;">
+                        <span>Time: <strong id="telem-time" style="color: #F8FAFC;">--:--:--</strong></span>
+                        <span>Mode: <strong id="telem-mode" style="color: #38BDF8;">Automatic</strong></span>
+                        <span>Data Source: <strong style="color: #10B981;">Simulation</strong></span>
+                    </div>
+                </div>
+
+                <!-- TOP 6 KPI CARDS -->
+                <div class="grid-6" style="margin-bottom: 24px;">
+                    <div class="metric-card">
+                        <div class="metric-label">💡 Current Load</div>
+                        <div id="m-load" class="metric-value">90.0 W</div>
+                        <div class="metric-sub" style="color: #94A3B8;">Priority 1,2,3</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">☀️ Solar Power</div>
+                        <div id="m-solar" class="metric-value">82.0 W</div>
+                        <div id="m-irr" class="metric-sub">Irr: 760 W/m²</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">🔋 Battery SOC</div>
+                        <div id="m-soc" class="metric-value">74.0 %</div>
+                        <div id="m-volt" class="metric-sub">Volt: 12.6 V</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">🩺 Battery SOH</div>
+                        <div id="m-soh" class="metric-value">94.0 %</div>
+                        <div class="metric-sub">Status: HEALTHY</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">⚡ Grid Power</div>
+                        <div id="m-grid" class="metric-value">8.0 W</div>
+                        <div id="m-tariff" class="metric-sub">Tariff: ₹6.0/kWh</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">💰 Today's Cost</div>
+                        <div id="m-cost" class="metric-value">₹47.70</div>
+                        <div id="m-saved-pct" class="metric-sub">Saved: 34.2%</div>
+                    </div>
+                </div>
+
+                <!-- CENTRAL SECTION: POWER FLOW & DECISION EXPLAINER -->
+                <div class="grid-2">
+                    <!-- Left: Power Flow & Matrix -->
+                    <div>
+                        <div class="card">
+                            <h3 style="color: #38BDF8; margin-bottom: 16px;"><i class="fas fa-project-diagram"></i> ⚡ Real-Time Power Flow Schematic</h3>
+                            <div class="grid-3" style="align-items: center;">
+                                <div>
+                                    <div class="metric-card" style="margin-bottom: 8px;">
+                                        <div class="metric-label">Solar PV</div>
+                                        <div id="pf-solar" class="metric-value" style="font-size: 1.2rem;">82.0 W</div>
+                                    </div>
+                                    <div class="metric-card" style="margin-bottom: 8px;">
+                                        <div class="metric-label">Battery BESS</div>
+                                        <div id="pf-batt" class="metric-value" style="font-size: 1.2rem;">0.0 W</div>
+                                    </div>
+                                    <div class="metric-card">
+                                        <div class="metric-label">Grid Supply</div>
+                                        <div id="pf-grid" class="metric-value" style="font-size: 1.2rem;">8.0 W</div>
+                                    </div>
+                                </div>
+
+                                <div class="schematic-box">
+                                    <h4 style="color: #60A5FA; font-size: 0.9rem;">IPDEMS</h4>
+                                    <h3 style="color: #FFFFFF; font-size: 1.1rem; margin: 4px 0;">DECISION ENGINE</h3>
+                                    <div id="pf-dispatch" style="color: #10B981; font-weight: 800; font-size: 0.8rem; margin-top: 8px;">
+                                        DISPATCH: Solar PV + Grid
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="metric-card">
+                                        <div class="metric-label">Connected Loads</div>
+                                        <div id="pf-load" class="metric-value" style="font-size: 1.2rem;">90.0 W</div>
+                                        <div style="font-size: 0.75rem; color: #94A3B8; margin-top: 4px;">P1: 20W | P2: 25W | P3: 45W</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3 style="color: #38BDF8; margin-bottom: 12px;"><i class="fas fa-table"></i> Adaptive Source Allocation Matrix</h3>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Source</th>
+                                        <th>Availability</th>
+                                        <th>Power</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="matrix-body">
+                                    <!-- Populated via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Right: Decision Rationale & Load Shedding -->
+                    <div>
+                        <div class="card">
+                            <h3 style="color: #A855F7; margin-bottom: 14px;"><i class="fas fa-brain"></i> 🤖 Why Did IPDEMS Select This Source?</h3>
+                            
+                            <div style="background-color: #0F172A; border: 2px solid #2563EB; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px;">
+                                <div style="color: #94A3B8; font-size: 0.78rem; font-weight: 800; text-transform: uppercase;">CURRENT DISPATCH DECISION:</div>
+                                <div id="ai-dispatch-title" style="color: #38BDF8; font-size: 1.3rem; font-weight: 900;">⚡ Solar PV + Grid</div>
+                            </div>
+
+                            <h4 style="margin-bottom: 8px;">Decision Rationale:</h4>
+                            <ul id="ai-reasons-list" style="padding-left: 20px; color: #F8FAFC; font-weight: 600; font-size: 0.9rem; line-height: 1.7;">
+                                <!-- Populated via JS -->
+                            </ul>
+                        </div>
+
+                        <div class="card">
+                            <h3 style="color: #F59E0B; margin-bottom: 14px;"><i class="fas fa-toggle-on"></i> 💡 Priority Load Control & Shedding Hierarchy</h3>
+                            
+                            <div class="flex justify-between items-center" style="margin-bottom: 14px;">
+                                <div>
+                                    <strong style="color: #10B981;">P1 Critical Load (20W)</strong>
+                                    <div style="font-size: 0.78rem; color: #94A3B8;">Always Protected</div>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked disabled>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="flex justify-between items-center" style="margin-bottom: 14px;">
+                                <div>
+                                    <strong style="color: #38BDF8;">P2 Important Load (25W)</strong>
+                                    <div style="font-size: 0.78rem; color: #94A3B8;">Medium Priority</div>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked id="p2-toggle">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <strong style="color: #F59E0B;">P3 Non-Critical Load (45W)</strong>
+                                    <div style="font-size: 0.78rem; color: #94A3B8;">Shed First in Deficit</div>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked id="p3-toggle">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOTTOM NAV BUTTONS -->
+                <div class="nav-bar" style="margin-top: 24px;">
+                    <button class="btn-secondary" onclick="navigateToStep('results')">⬅️ Back to Step 2: Prediction Results</button>
+                    <button class="btn-primary" onclick="navigateToStep('input')">🔄 Restart Step 1: System Inputs</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Application Logic JS -->
+    <script src="app.js"></script>
+</body>
+</html>
