@@ -422,3 +422,18 @@ h1, h2, h3, h4, h5, h6 {
 
 input:checked + .slider { background-color: var(--text-emerald); }
 input:checked + .slider:before { transform: translateX(20px); }
+
+/* ---------------------------------------------------------
+   7. CHART CONTAINER SIZING (Prevents infinite vertical stretch)
+   --------------------------------------------------------- */
+.chart-container {
+    position: relative;
+    height: 320px !important;
+    max-height: 340px !important;
+    width: 100% !important;
+    margin: 0 auto;
+}
+
+.chart-container canvas {
+    max-height: 320px !important;
+}

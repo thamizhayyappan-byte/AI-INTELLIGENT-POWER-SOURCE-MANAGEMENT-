@@ -287,11 +287,15 @@
                         <div class="grid-2">
                             <div>
                                 <h4 style="color: #38BDF8; margin-bottom: 10px;">TFT Forecasting Model: Epoch Loss Convergence</h4>
-                                <canvas id="chartTFTLoss" height="220"></canvas>
+                                <div class="chart-container">
+                                    <canvas id="chartTFTLoss"></canvas>
+                                </div>
                             </div>
                             <div>
                                 <h4 style="color: #10B981; margin-bottom: 10px;">VAE Anomaly Model: Reconstruction Loss</h4>
-                                <canvas id="chartVAELoss" height="220"></canvas>
+                                <div class="chart-container">
+                                    <canvas id="chartVAELoss"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -299,7 +303,9 @@
                     <!-- TAB 2: COST PREDICTIONS -->
                     <div id="tab-cost" class="tab-content">
                         <h4 style="color: #38BDF8; margin-bottom: 10px;">24-Hour Cumulative Electricity Cost Comparison (₹)</h4>
-                        <canvas id="chartCostCompare" height="150"></canvas>
+                        <div class="chart-container">
+                            <canvas id="chartCostCompare"></canvas>
+                        </div>
                     </div>
 
                     <!-- TAB 3: PEAK SHAVING & DISPATCH SHARE -->
@@ -307,11 +313,15 @@
                         <div class="grid-2">
                             <div>
                                 <h4 style="color: #38BDF8; margin-bottom: 10px;">Grid Peak-Shaving Trajectory (17:00 - 22:00 Peak Tariff)</h4>
-                                <canvas id="chartPeakShaving" height="220"></canvas>
+                                <div class="chart-container">
+                                    <canvas id="chartPeakShaving"></canvas>
+                                </div>
                             </div>
                             <div>
                                 <h4 style="color: #F59E0B; margin-bottom: 10px;">Predicted Multi-Source Energy Dispatch Share</h4>
-                                <canvas id="chartEnergyDonut" height="220"></canvas>
+                                <div class="chart-container">
+                                    <canvas id="chartEnergyDonut"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
