@@ -371,6 +371,7 @@ function createChart(canvasId, type, dataObj) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            aspectRatio: type === 'doughnut' ? 1.8 : 2.2,
             plugins: {
                 legend: { labels: { color: '#F8FAFC', font: { weight: 'bold' } } }
             },
